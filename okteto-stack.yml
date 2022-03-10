@@ -36,5 +36,3 @@ services:
       - /bitnami/mongodb
     resources:
       storage: 500Mi
-
-
