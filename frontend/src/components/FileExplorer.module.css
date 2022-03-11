@@ -9,4 +9,16 @@
   text-align: center;
 }
 
-.FileExplorerItem {}
+.FileExplorerItem {
+  display: flex;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.FileExplorerItem:first-child {
+  margin-left: 0;
+}
+
+.FileExplorerFolder > .FileExplorerFolder {
+  margin-left: 8px;
+}

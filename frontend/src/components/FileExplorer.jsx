@@ -6,7 +6,7 @@ import FolderIcon from "../assets/images/folder.svg";
 
 import styles from "./FileExplorer.module.css";
 
-function FileExplorer({ files = [] }) {
+function FileExplorer({ files = [], handleFileSelected }) {
   return (
     <div className={styles.FileExplorer}>
       {files.length === 0 && (
@@ -17,13 +17,22 @@ function FileExplorer({ files = [] }) {
       {files.map((file) => (
         <div className={styles.FileExplorerItem} key={file.id}>
           {file.kind === "folder" && (
-            <FolderIcon className={styles.FileExplorerIcon} />
+            <div className={styles.FileExplorerFolder}>
+              <FolderIcon className={styles.FileExplorerIcon} />
+            </div>
           )}
           {file.kind !== "folder" && (
-            <FileIcon className={styles.FileExplorerIcon} />
+            <div
+              className={styles.FileExplorerFile}
+              onClick={() => handleFileSelected(file.id)}
+            >
+              <FileIcon className={styles.FileExplorerIcon} />
+            </div>
           )}
           {file.name}
-          <div className={styles.FileExplorerSize}>{file.size}</div>
+          {file.kind === "file" && (
+            <div className={styles.FileExplorerSize}>{file.size} Kb</div>
+          )}
         </div>
       ))}
     </div>
