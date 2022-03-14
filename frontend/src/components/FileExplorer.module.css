@@ -1,6 +1,6 @@
 .FileExplorer {
   --filexplorer-bgcolor: #2f2f2f;
-
+  padding: 18px;
   background-color: var(--filexplorer-bgcolor);
 }
 
@@ -10,15 +10,32 @@
 }
 
 .FileExplorerItem {
+  padding: 8px 0;
   display: flex;
+  align-items: center;
   cursor: pointer;
-  margin-left: 8px;
 }
 
-.FileExplorerItem:first-child {
-  margin-left: 0;
+.FileExplorerItem:hover {
+  background-color: #3f3f3f;
 }
 
-.FileExplorerFolder > .FileExplorerFolder {
+.SelectedItem {
+  background-color: #1c1c1c;
+}
+
+.FileExplorerName {
+  flex-grow: 2;
+  font-family: sans-serif;
+  font-size: 16px;
+  margin-left: 4px;
+}
+
+.FileExplorerSize {
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+.ChildItem {
   margin-left: 8px;
 }

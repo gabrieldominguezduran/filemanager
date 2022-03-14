@@ -9,7 +9,7 @@ import { selectFile } from "../store/filemanager/filemanager-actions";
 
 import styles from "./App.module.css";
 
-// const POLL_INTERVAL = 5000;
+const POLL_INTERVAL = 5000;
 
 function App() {
   const dispatch = useDispatch();
@@ -28,26 +28,39 @@ function App() {
     dispatch(selectFile(file));
   }, [file]);
 
+  const sortFiles = (data, pid = null) => {
+    return data.reduce((arr, file) => {
+      if (file.parentId === pid) {
+        const obj = { ...file };
+        const children = sortFiles(data, file.id);
+        if (children.length) obj.children = children;
+        arr.push(obj);
+      }
+      return arr;
+    }, []);
+  };
+
   const fetchFiles = async () => {
     try {
       const response = await fetch(`/api/files`);
       const data = await response.json();
-      setFiles(data);
+      const result = sortFiles(data);
+      setFiles(result);
     } catch (error) {
       console.log("error", error);
     }
   };
 
-  // useInterval(
-  //   () => {
-  //     dispatch(refreshFiles(files));
-  //   },
-  //   POLL_INTERVAL,
-  //   true
-  // );
+  useInterval(
+    () => {
+      dispatch(refreshFiles(files));
+    },
+    POLL_INTERVAL,
+    true
+  );
 
-  const handleFileSelected = (id) => {
-    setFile(files.find((f) => f.id === id));
+  const handleFileSelected = (fileSend) => {
+    setFile(fileSend);
   };
 
   const { list } = useSelector((store) => store.files);
@@ -55,7 +68,11 @@ function App() {
 
   return (
     <div className={styles.App}>
-      <FileExplorer files={list} handleFileSelected={handleFileSelected} />
+      <FileExplorer
+        files={list}
+        handleFileSelected={handleFileSelected}
+        selectedFile={selectedFile}
+      />
       <FileContent file={selectedFile} />
     </div>
   );

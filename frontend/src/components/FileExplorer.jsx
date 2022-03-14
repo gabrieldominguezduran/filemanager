@@ -6,7 +6,43 @@ import FolderIcon from "../assets/images/folder.svg";
 
 import styles from "./FileExplorer.module.css";
 
-function FileExplorer({ files = [], handleFileSelected }) {
+function FileExplorer({ files = [], handleFileSelected, selectedFile }) {
+  const renderChildren = (childFiles, handleFile, selectFile) => {
+    return childFiles.map((file) => {
+      return (
+        <>
+          <div
+            className={
+              selectFile && selectFile.id === file.id
+                ? `${styles.SelectedItem} ${styles.FileExplorerItem}`
+                : `${styles.FileExplorerItem}`
+            }
+            key={file.id}
+            onClick={() => handleFile(file)}
+          >
+            {file.kind === "folder" && (
+              <FolderIcon className={styles.FileExplorerIcon} />
+            )}
+            {file.kind !== "folder" && (
+              <FileIcon className={styles.FileExplorerIcon} />
+            )}
+            <div className={styles.FileExplorerName}>{file.name}</div>
+
+            {file.kind === "file" && (
+              <div className={styles.FileExplorerSize}>
+                {Math.ceil(file.size / 1024)} Kb
+              </div>
+            )}
+          </div>
+          <div key={file.name} className={styles.ChildItem}>
+            {file.children &&
+              renderChildren(file.children, handleFile, selectFile)}
+          </div>
+        </>
+      );
+    });
+  };
+
   return (
     <div className={styles.FileExplorer}>
       {files.length === 0 && (
@@ -15,25 +51,35 @@ function FileExplorer({ files = [], handleFileSelected }) {
         </div>
       )}
       {files.map((file) => (
-        <div className={styles.FileExplorerItem} key={file.id}>
-          {file.kind === "folder" && (
-            <div className={styles.FileExplorerFolder}>
+        <>
+          <div
+            className={
+              selectedFile && selectedFile.id === file.id
+                ? `${styles.SelectedItem} ${styles.FileExplorerItem}`
+                : `${styles.FileExplorerItem}`
+            }
+            key={file.id}
+            onClick={() => handleFileSelected(file)}
+          >
+            {file.kind === "folder" && (
               <FolderIcon className={styles.FileExplorerIcon} />
-            </div>
-          )}
-          {file.kind !== "folder" && (
-            <div
-              className={styles.FileExplorerFile}
-              onClick={() => handleFileSelected(file.id)}
-            >
+            )}
+            {file.kind !== "folder" && (
               <FileIcon className={styles.FileExplorerIcon} />
-            </div>
-          )}
-          {file.name}
-          {file.kind === "file" && (
-            <div className={styles.FileExplorerSize}>{file.size} Kb</div>
-          )}
-        </div>
+            )}
+            <div className={styles.FileExplorerName}>{file.name}</div>
+
+            {file.kind === "file" && (
+              <div className={styles.FileExplorerSize}>
+                {Math.ceil(file.size / 1024)} Kb
+              </div>
+            )}
+          </div>
+          <div key={file.name} className={styles.ChildItem}>
+            {file.children &&
+              renderChildren(file.children, handleFileSelected, selectedFile)}
+          </div>
+        </>
       ))}
     </div>
   );
